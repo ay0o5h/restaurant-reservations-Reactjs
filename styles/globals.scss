@@ -33,11 +33,9 @@ nav {
   z-index: 3;
   height: 70px;
   padding-top: 10px;
-
   .logoDiv {
     display: flex;
     flex-direction: row;
-
     h1 {
       margin-top: 5px;
       font-family: cursive;
@@ -46,44 +44,34 @@ nav {
       margin-left: 5px;
     }
   }
-
-  .btns {
     .btn {
       background-color: transparent;
       border: 0;
       outline: 0;
       text-transform: capitalize;
-      padding: 5% 30px;
+      padding: 10px 30px;
       border-radius: 30px;
       font-size: 15px;
       color: black;
       cursor: pointer;
       transition: .5s;
-
+      background-color: $mainColor;
+      color: white;
       box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-
-      &:first-child {
-        margin-right: 10px;
-
-        &:hover {
-          transform: translateY(-0.25em);
-          box-shadow: 0 0.5em 0.5em -0.4em rgb(148, 148, 148);
-        }
-      }
-
-      &:last-child {
-        background-color: $mainColor;
+      &:hover {
+        box-shadow: 0 0.5em 0.5em -0.4em #f59e52;
+        transform: translateY(-0.25em);
         color: white;
-
-        &:hover {
-          box-shadow: 0 0.5em 0.5em -0.4em #f59e52;
-          transform: translateY(-0.25em);
-        }
       }
-    }
+      // &:first-child {
+      //   margin-right: 10px;
+      //   &:hover {
+      //     transform: translateY(-0.25em);
+      //     box-shadow: 0 0.5em 0.5em -0.4em rgb(148, 148, 148);
+      //   }
+      // 
   }
 }
-
 // responsive navbar
 @media screen and (max-width: 500px) {
   nav {
@@ -91,26 +79,18 @@ nav {
     background-color: white;
   }
 }
-
 // main 
 .main {
   @extend .container;
   height: 100vh;
-
   .left {
     flex: 50%;
-
     h1 {
       font-size: 60px;
       font-weight: 700;
       line-height: 70px;
       margin-top: 10%;
-
-      span {
-        color: $mainColor
-      }
     }
-
     p {
       text-transform: capitalize;
       font-family: 'Times New Roman', Times, serif;
@@ -119,27 +99,28 @@ nav {
       width: 80%;
       color: rgba(0, 0, 0, .3);
     }
-
     .btn {
       background-color: $mainColor;
       color: white;
-      font-family: 'Times New Roman', Times, serif;
       border: 0;
       outline: 0;
       text-transform: capitalize;
       padding: 1% 25px;
       border-radius: 20px;
-      font-size: 20px;
+      font-size: 17px;
       margin-top: 10px;
       cursor: pointer;
+      transition: .5s;
+      &:hover {
+        box-shadow: 0 0.5em 0.5em -0.4em #f59e52;
+        transform: translateY(-0.25em);
+      }
     }
   }
-
   .right {
     flex: 50%;
   }
 }
-
 // responsive main
 @media screen and (max-width: 500px) {
   .main {
@@ -147,12 +128,10 @@ nav {
     flex-direction: column-reverse;
     justify-content: center;
     align-items: center;
-
     .left,
     .right {
       padding: 3%;
       text-align: center;
-
       p {
         margin: auto;
         margin-bottom: 20px;
@@ -160,28 +139,23 @@ nav {
     }
   }
 }
-
 // restaurants
 .restaurants {
-
   @extend .container;
   flex-direction: column;
   margin-top: 10%;
-
   h1 {
     color: $mainColor;
     text-align: left;
     font-weight: 900;
     font-size: 40px;
   }
-
   .cards-list {
     z-index: 0;
     width: 100%;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-
     .card {
       margin: 30px auto;
       width: 270px;
@@ -190,12 +164,10 @@ nav {
       box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
       cursor: pointer;
       transition: 0.4s;
-
       .card_image {
         width: inherit;
         height: inherit;
         border-radius: 30px;
-
         img {
           width: inherit;
           height: inherit;
@@ -203,7 +175,6 @@ nav {
           object-fit: cover;
         }
       }
-
       .card_title {
         text-align: left;
         padding-left: 10px;
@@ -215,7 +186,6 @@ nav {
         height: 40px;
         color: white;
       }
-
       &:hover {
         transform: scale(1.1, 1.1);
         box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25),
@@ -223,98 +193,86 @@ nav {
       }
     }
   }
-
+// restaurant responsive
   @media all and (max-width: 500px) {
     .restaurants {
       margin-top: 15%;
-
       .card-list {
         flex-direction: column;
       }
     }
   }
 }
-
 // footer
 .footer {
   padding: 2% 5%;
-
   p {
     margin-top: 2%;
     text-align: center;
     font-size: 15px;
     color: rgba(0, 0, 0, 0.5);
   }
-
   hr {
     height: 1px;
     background-color: #ccc;
     border: none;
   }
 }
-
 // login
 .login {
   @extend .container;
   height: 100vh;
-
   .left {
     flex: 50%;
-
     h1 {
       font-size: 40px;
       font-weight: 700;
       line-height: 70px;
       color: #281766;
     }
-
     .form {
       padding-right: 30%;
-
       .input {
         border-radius: 20px;
         padding: 8px 10px;
         outline: 0;
       }
-
       input,
       .password {
         border-radius: 20px;
         padding: 4px 10px;
         outline: 0;
       }
-
       button {
         border-radius: 20px;
         background-color: $mainColor;
         border: 0;
         outline: 0;
         height: 50px;
-        width: 50px
+        width: 50px;
+        &:hover {
+          box-shadow: 0 0.5em 0.5em -0.4em #f59e52;
+          transform: translateY(-0.25em);
+        }
       }
     }
-
     p {
       color: rgba(0, 0, 0, .5)
     }
   }
-
   .right {
     flex: 50%;
   }
 }
-
 // responsive login
 @media screen and (max-width: 500px) {
   .login {
     flex-direction: column-reverse;
     justify-content: center;
     align-items: center;
-
     .form {
       padding-right: 0;
     }
-
     .left,
     .right {
       padding: 3%;
@@ -322,7 +280,7 @@ nav {
     }
   }
 }
-
+// single restaurant
 .singleRestaurant {
   @extend .container;
   height: 100vh;
@@ -331,7 +289,6 @@ nav {
   .left {
     flex: 50%;
   }
-
   .right {
     flex: 50%;
     padding: 3%;
@@ -343,7 +300,6 @@ nav {
         border-bottom-left-radius: 20px;
       }
     }
-
     button {
       background-color: $mainColor;
       color: white;
@@ -354,6 +310,10 @@ nav {
       border-top-right-radius: 20px;
       border-bottom-right-radius: 20px;
       cursor: pointer;
+      &:hover {
+        box-shadow: 0 0.5em 0.5em -0.4em #f59e52;
+        transform: translateY(-0.25em);
+      }
     }
   }
 }
