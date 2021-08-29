@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 import { useState } from "react";
 import Image from 'next/image'
 import cover from '../public/images/login.svg';
@@ -9,32 +10,19 @@ import Link from "next/link";
 const Signup =() => {
   const Router = useRouter();
 
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [secondStep, setSecondStep] = useState(false);
-  const [otp, setOtp] = useState("");
-    const onFinish = (e) => {
-      ApiRegister(e, (data, error) => {
+    const onFinish = (info) => {
+      ApiRegister(info, (data, error) => {
         if (error) return alert(error);
-        Cookies.set("registerToken", data.token);
-        setSecondStep(true);
+        Cookies.set("token", data.token);
+        Cookies.set("user", JSON.stringify(data.user));
+        Router.push("/");
       });
    };
-        const handleOtp = (e) => {
-          e.preventDefault();
-          ApiOtp({ otp }, (data, error) => {
-            console.log(data);
-            if (error) return alert(error);
-            Cookies.set("user", JSON.stringify(data.user));
-            Router.push("/");
-          });
-        };
+   
     return (
         <div className="login">
               <div className="left">
                 <h1>Sign up</h1>
-                {!secondStep ? (
         <Form
 
 initialValues={{
@@ -61,13 +49,16 @@ scrollToFirstError
   </Form.Item>
 
   <Form.Item
-    name="phone"
+    name="email"
    
     rules={[
-  
+      {
+        type: 'email',
+        message: 'The input is not valid E-mail!',
+      },
       {
         required: true,
-        message: 'Please input your phone!',
+        message: 'Please input your E-mail!',
       },
     ]}
   >
@@ -93,19 +84,7 @@ scrollToFirstError
      <ArrowRightOutlined style={{fontWeight:900}}/>
     </Button>
   </Form.Item>
-  </Form>):(
-     <form onSubmit={handleOtp}>
-     <p className="label">enter your code</p>
-     <input
-       required
-       type="text"
-       placeholder="1234"
-       value={otp}
-       onChange={(e) => setOtp(e.target.value)}
-     />
-     <button type="submit">  <ArrowRightOutlined style={{fontWeight:900}}/></button>
-   </form>
-  )}
+  </Form>
   <p>already have an account ? <Link href="/login">Login</Link></p> 
 
                 </div>

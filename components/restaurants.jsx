@@ -1,10 +1,12 @@
 import {ApiRestaurant} from '../api'
 import { useEffect,useState } from "react";
-import {Spin,Empty} from 'antd';
+import {Spin,Empty, message} from 'antd';
+import Link from "next/link";
 const Restaurants =() => {
   const [restaurant, setRestaurant] = useState();
   useEffect(() => {
     ApiRestaurant((data, error) => { 
+      console.log(data)
       if (error) return message.error(error);
       setRestaurant(data);
       console.log(data)
@@ -16,11 +18,15 @@ const Restaurants =() => {
             <div className="cards-list">
             {!!restaurant ? (
               !restaurant?.length > 0 ? (
-                <Spin className="spin" size="large" />
+                <Empty />
               ) : (
-                restaurant?.map((rest) => (
+                restaurant.map((rest) => (              
                   <div className="card" key={rest.id}>
-                  <div className="card_image"> <img src={rest.image} /> </div>
+                  <div className="card_image">
+                    <Link href={`/singleRestaurant/${rest.id}`}>
+                     <img src={rest.imgUrl} />
+                     </Link>
+                      </div>
                      <div className="card_title title-white">
                        <p>{rest.name}</p>
                          </div>
@@ -28,7 +34,8 @@ const Restaurants =() => {
                 ))
               )
             ) : (
-              <Empty />
+              <Spin className="spin" size="large" />
+             
             )}
           </div>
         </div>

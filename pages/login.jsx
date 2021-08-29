@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 import { useState } from "react";
 import Image from 'next/image'
 import cover from '../public/images/login.svg';
@@ -10,8 +11,12 @@ const Login =() => {
   const Router = useRouter();
 
   const [loading, setLoading] = useState(false);
-    const onFinish = () => {
+    const onFinish = (info) => {
+      console.log(`info: ${info}`)
+      setLoading(true);
       ApiLogin(info, (data, error) => {
+        console.log(`data: ${data}`)
+        console.log(`info: ${info}`)
         setLoading(false);
         if (error) return message.error("Invalid credentials");
         Cookies.set("token", data.token);
@@ -30,23 +35,26 @@ initialValues={{
 remember: true,
 }}
 
-name="register"
+name="login"
 onFinish={onFinish}
 className="form"
 scrollToFirstError
 >
   <Form.Item
-    name="phone"
+    name="email"
    
     rules={[
-  
+      {
+        type: 'email',
+        message: 'The input is not valid E-mail!',
+      },
       {
         required: true,
-        message: 'Please input your phone!',
+        message: 'Please input your E-mail!',
       },
     ]}
   >
-    <Input placeholder="07805847657" className="input" />
+    <Input placeholder="aya@example.com" className="input" />
   </Form.Item>
 
   <Form.Item
