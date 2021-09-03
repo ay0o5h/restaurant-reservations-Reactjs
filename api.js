@@ -71,3 +71,4 @@ export const ApiRegister = (info, callback) => {
         .catch((error) => console.log("error", error));
 
   };
+

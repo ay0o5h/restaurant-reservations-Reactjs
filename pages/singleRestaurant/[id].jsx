@@ -10,39 +10,42 @@ import {ApiRestaurant} from '../../api'
 import logo from '../../public/images/logo2.svg'
 import Link from "next/link";
 
-
 const singleRestaurant=()=>{
+  const [tables, setTables] = useState([]);
+
   const Router = useRouter();
-  const [tables, setTables] = useState();
   const [token, setToken] = useState();
   const [restaurant, setRestaurant] = useState();
   const { id } = Router.query;
-  
   useEffect(() => {
-    const user = Cookies.get("user");
-      if (user) setToken(JSON.parse(user));
     ApiRestaurant((data, error) => { 
       console.log(data)
       if (error) return message.error(error);
       setRestaurant(data);
-      console.log(data)
+      console.log(restaurant)
     });
   }, []);
+
   useEffect(() => {
-    const token = Cookies.get("token");
+
+  
+    const token = Cookies.get("user");
     var myHeaders = new Headers();
-    myHeaders.append("token", token);
+    myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjMwNTgwODY5fQ.b9_d2qEl1JGszUaC5f9EqdPvO5pJgWjrbuAj655mVUA");
 
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
-
-    fetch(`${URL}/tables/restaurant/${id}`, requestOptions)
+    fetch(`https://restaurant-reservation-systme.herokuapp.com/v1/tables/restaurant/${id}`, requestOptions)
       .then((response) => response.json())
-      .then((result) => setTables(result.data))
+      .then((result) =>  (setTables(result.data)))
       .catch((error) => console.log("error", error));
+
+      console.log(tables);
+
+
   }, [Router]);
   const handleLogout = async () => {
     await Cookies.remove("token");
@@ -96,7 +99,18 @@ function onChangeNum(value) {
       </nav>
         <div className="singleRestaurant">
           <div className="left"  >
-             <svg version="1.1" baseProfile="full"  width="500" height="500" >
+   
+              <svg version="1.1" baseProfile="full"  width="500" height="500" >
+                {/* {restaurant?.map((rest) => {
+             <image key={rest.id} href={rest.mapUrl}   x="0" y="0" height="400px" width="400px"/>
+
+                })} */}
+          {!! tables? (
+                // <circle key={tables.id} cx={tables.x} cy={tables.y} r="10" fill="green"></circle>
+        <p>{tables.x}</p>
+          ) :null}
+</svg>
+             {/* <svg version="1.1" baseProfile="full"  width="500" height="500" >
              <image href="https://i.ibb.co/7kg8Yxw/1.png"   x="0" y="0" height="400px" width="400px"/>
                <circle cx="50" cy="60" r="10" fill="red" onClick={handleRect} ></circle>
                 <circle cx="140" cy="60" r="10" fill="green"></circle>
@@ -109,7 +123,68 @@ function onChangeNum(value) {
                 <circle cx="50" cy="270" r="10" fill="green"></circle>
                 <circle cx="140" cy="270" r="10" fill="green"></circle>
                 <circle cx="100" cy="240" r="10" fill="green"></circle>
-                 </svg>       
+                 </svg>        */}
+                  {/* <svg version="1.1" baseProfile="full"  width="500" height="500" >
+             <image href="https://i.ibb.co/fSQs9pY/restaurant-3.png"   x="0" y="0" height="400px" width="400px"/>
+               <circle cx="100" cy="60" r="10" fill="red" onClick={handleRect} ></circle>
+               <circle cx="100" cy="120" r="10" fill="green"></circle>
+               <circle cx="100" cy="180" r="10" fill="green"></circle>
+                <circle cx="100" cy="300" r="10" fill="green"></circle>
+                <circle cx="100" cy="240" r="10" fill="green"></circle>
+               <circle cx="180" cy="60" r="10" fill="green"></circle>
+               <circle cx="180" cy="120" r="10" fill="green"></circle>
+               <circle cx="180" cy="180" r="10" fill="green"></circle>
+                <circle cx="180" cy="300" r="10" fill="green"></circle>
+                <circle cx="180" cy="240" r="10" fill="green"></circle>
+               <circle cx="270" cy="60" r="10" fill="green"></circle>
+               <circle cx="270" cy="120" r="10" fill="green"></circle>
+               <circle cx="270" cy="180" r="10" fill="green"></circle>
+                <circle cx="270" cy="300" r="10" fill="green"></circle>
+                <circle cx="270" cy="240" r="10" fill="green"></circle>
+               <circle cx="360" cy="60" r="10" fill="green"></circle>
+               <circle cx="360" cy="120" r="10" fill="green"></circle>
+               <circle cx="360" cy="180" r="10" fill="green"></circle>
+                <circle cx="360" cy="300" r="10" fill="green"></circle>
+                <circle cx="360" cy="240" r="10" fill="green"></circle>
+                 </svg>      */}
+                    {/* <svg version="1.1" baseProfile="full"  width="500" height="500" >
+             <image href="https://i.ibb.co/25p9g6T/restaurant-2.png"   x="0" y="0" height="400px" width="400px"/>
+               <circle cx="180" cy="60" r="10" fill="green"></circle>
+               <circle cx="270" cy="60" r="10" fill="green"></circle>
+               <circle cx="360" cy="60" r="10" fill="green"></circle>
+               <circle cx="180" cy="120" r="10" fill="green"></circle>
+               <circle cx="270" cy="120" r="10" fill="green"></circle>
+               <circle cx="360" cy="120" r="10" fill="green"></circle>
+               <circle cx="180" cy="180" r="10" fill="green"></circle>
+               <circle cx="270" cy="180" r="10" fill="green"></circle>
+               <circle cx="360" cy="180" r="10" fill="green"></circle>
+               <circle cx="40" cy="300" r="10" fill="green"></circle>
+             <circle cx="100" cy="300" r="10" fill="green"></circle>
+             <circle cx="270" cy="300" r="10" fill="green"></circle>
+             <circle cx="180" cy="300" r="10" fill="green"></circle>
+             <circle cx="360" cy="300" r="10" fill="green"></circle>
+                 </svg>   */}
+                     {/* <svg version="1.1" baseProfile="full"  width="500" height="500" >
+             <image href="https://i.ibb.co/B3G6gyz/restaurant-4.png"   x="0" y="0" height="400px" width="400px"/>
+             <circle cx="40" cy="60" r="10" fill="green"></circle>
+             <circle cx="100" cy="60" r="10" fill="green"></circle>
+               <circle cx="180" cy="60" r="10" fill="green"></circle>
+               <circle cx="270" cy="60" r="10" fill="green"></circle>
+               <circle cx="40" cy="120" r="10" fill="green"></circle>
+             <circle cx="100" cy="120" r="10" fill="green"></circle>
+               <circle cx="180" cy="120" r="10" fill="green"></circle>
+               <circle cx="270" cy="120" r="10" fill="green"></circle>
+               <circle cx="40" cy="180" r="10" fill="green"></circle>
+             <circle cx="100" cy="180" r="10" fill="green"></circle>
+               <circle cx="180" cy="180" r="10" fill="green"></circle>
+               <circle cx="270" cy="180" r="10" fill="green"></circle>
+               <circle cx="40" cy="240" r="10" fill="green"></circle>
+             <circle cx="100" cy="240" r="10" fill="green"></circle>
+             <circle cx="270" cy="240" r="10" fill="green"></circle>
+             <circle cx="180" cy="240" r="10" fill="green"></circle>
+             <circle cx="40" cy="300" r="10" fill="green"></circle>
+             <circle cx="100" cy="300" r="10" fill="green"></circle>
+                 </svg>   */}
               </div> 
          <div className="right">
            <Form className="form" initialValues={{remember: true,}} 

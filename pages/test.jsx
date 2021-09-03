@@ -8,12 +8,24 @@ import {ArrowRightOutlined,UserOutlined} from '@ant-design/icons';
 import Cookies from "js-cookie";
 import { useState,useEffect } from "react";
 import { useRouter } from "next/router";
-
+import {ApiRestaurant} from '../api'
 const Test=()=>{
-    const [token, setToken] = useState();
-    const Router = useRouter();
+  const Router = useRouter();
+  const [tables, setTables] = useState();
+  const [token, setToken] = useState();
+  const [restaurant, setRestaurant] = useState();
+  const { id } = Router.query;
+   
+    
+
   
     useEffect(() => {
+      ApiRestaurant((data, error) => { 
+        console.log(data)
+        if (error) return message.error(error);
+        setRestaurant(data);
+        console.log(restaurant)
+      });
       const user = Cookies.get("user");
       if (user) setToken(JSON.parse(user));
     }, []);
@@ -76,14 +88,18 @@ function onChangeNum(value) {
        
                 <div className="left"  >
        
-                <svg version="1.1" baseProfile="full"  width="500" height="500" >
-                  <image href="https://i.ibb.co/25p9g6T/restaurant-2.png"   x="0" y="0" height="400px" width="400px"/>
-               <circle cx="150" cy="50" r="20" fill="green" onClick={handleRect} ></circle>
+                {/* <svg version="1.1" baseProfile="full"  width="500" height="500" > */}
+                {restaurant?.map((rest) => (
+                  <div key={rest.id}>
+                    {rest.name}
+                    </div>
+    ))}
+                        {/* <circle cx="150" cy="50" r="20" fill="green" onClick={handleRect} ></circle>
 
                <circle cx="256" cy="100" r="20" fill="red"></circle>
 
 
-                 </svg>
+                 </svg> */}
               
               </div> 
         
