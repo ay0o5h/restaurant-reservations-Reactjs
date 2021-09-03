@@ -303,6 +303,10 @@ nav {
         object-fit: cover;
       }
     }
+    .css-outline  {
+      outline: 1px solid black;
+    
+    }
   }
   .right {
     flex: 50%;
@@ -312,6 +316,7 @@ nav {
       .picker {
         padding: 10px;
         border-radius:15px;
+        width: 83%;
       }
       .picker-num {
         padding: 5px ;
