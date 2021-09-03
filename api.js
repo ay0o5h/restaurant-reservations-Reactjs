@@ -48,12 +48,8 @@ export const ApiRegister = (info, callback) => {
   export const ApiRestaurant = async (callback) => {
     const token = await Cookies.get("user");
     var myHeaders = new Headers();
-    myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNjMwMjcyMDM4fQ.CikfEkvGr7ovnF0V__yTzAsXUVN4Gb5Bzyx7oCZTcAE");
+    myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjMwNjIxNjMyfQ.GdBjxrJ5mFsCIHNJudoIhSRlgZXn9GhW9Iboz99WgXo");
     myHeaders.append("Content-Type", "application/json");
-    
-     
-
-  
       var requestOptions = {
         method: "GET",
         headers: myHeaders,

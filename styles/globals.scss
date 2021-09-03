@@ -290,7 +290,9 @@ nav {
     flex: 50%;
     circle{
      z-index: 55;
+     cursor: pointer;
     }
+   
     .card_image {
       width: inherit;
       height: inherit;

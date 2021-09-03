@@ -1,10 +1,10 @@
 import Cookies from 'js-cookie'
-import { useState } from "react";
+import Head from 'next/head'
 import Image from 'next/image'
 import cover from '../public/images/login.svg';
 import {ArrowRightOutlined} from '@ant-design/icons'
 import { Form, Input, Button,message } from 'antd';
-import { ApiOtp, ApiRegister } from "../api";
+import { ApiRegister } from "../api";
 import { useRouter } from "next/router";
 import Link from "next/link";
 const Signup =() => {
@@ -12,7 +12,7 @@ const Signup =() => {
 
     const onFinish = (info) => {
       ApiRegister(info, (data, error) => {
-        if (error) return alert(error);
+        if (error) return message.error(error);
         Cookies.set("token", data.token);
         Cookies.set("user", JSON.stringify(data.user));
         Router.push("/");
@@ -20,6 +20,10 @@ const Signup =() => {
    };
    
     return (
+      <>
+        <Head>
+        <title>Sign up</title>  
+      </Head>
         <div className="login">
               <div className="left">
                 <h1>Sign up</h1>
@@ -92,6 +96,7 @@ scrollToFirstError
             <Image className="cover" src={cover}  /> 
             </div>
         </div>
+        </>
     )
 }
 export default Signup

@@ -1,8 +1,11 @@
 import '../styles/globals.scss'
 import 'antd/dist/antd.css';
-import Cookies from 'js-cookie'
+import Layout from '../components/layout'
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
+  return (
 
+      <Component {...pageProps} />
+
+  )
+  }
 export default MyApp

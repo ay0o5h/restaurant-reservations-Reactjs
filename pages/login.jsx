@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import Cookies from 'js-cookie'
 import { useState } from "react";
 import Image from 'next/image'
@@ -25,6 +26,10 @@ const Login =() => {
       });
         };
     return (
+      <>
+        <Head>
+        <title>Login</title>  
+      </Head>
         <div className="login">
               <div className="left">
                 <h1>Login</h1>
@@ -89,6 +94,7 @@ scrollToFirstError
             <Image className="cover" src={cover}  /> 
             </div>
         </div>
+        </>
     )
 }
 export default Login

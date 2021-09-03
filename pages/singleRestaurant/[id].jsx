@@ -7,9 +7,8 @@ import { useState,useEffect } from "react";
 import { useRouter } from "next/router";
 import { URL } from "../../api";
 import {ApiRestaurant} from '../../api'
-import logo from '../../public/images/logo2.svg'
-import Link from "next/link";
-
+import Navbar from '../../components/navbar';
+import Footer from '../../components/footer';
 const singleRestaurant=()=>{
   const [tables, setTables] = useState([]);
 
@@ -17,21 +16,14 @@ const singleRestaurant=()=>{
   const [token, setToken] = useState();
   const [restaurant, setRestaurant] = useState();
   const { id } = Router.query;
+   let x=200;
+   let y=200;
+   let mapUrl="https://i.ibb.co/7kg8Yxw/1.png"
   useEffect(() => {
-    ApiRestaurant((data, error) => { 
-      console.log(data)
-      if (error) return message.error(error);
-      setRestaurant(data);
-      console.log(restaurant)
-    });
-  }, []);
-
-  useEffect(() => {
-
-  
-    const token = Cookies.get("user");
+    const user = Cookies.get("user");
+    user ? setToken(user) :Router.push("/login")
     var myHeaders = new Headers();
-    myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjMwNTgwODY5fQ.b9_d2qEl1JGszUaC5f9EqdPvO5pJgWjrbuAj655mVUA");
+    myHeaders.append("token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjMwNjIxNjMyfQ.GdBjxrJ5mFsCIHNJudoIhSRlgZXn9GhW9Iboz99WgXo" );
 
     var requestOptions = {
       method: "GET",
@@ -42,26 +34,12 @@ const singleRestaurant=()=>{
       .then((response) => response.json())
       .then((result) =>  (setTables(result.data)))
       .catch((error) => console.log("error", error));
-
       console.log(tables);
-
-
   }, [Router]);
-  const handleLogout = async () => {
-    await Cookies.remove("token");
-    await Cookies.remove("user");
-    Router.reload();
-  };
   const handleRect =  () => {
     console.log("hello")
   };
-const content = (
-    <div>
-      <Button onClick={handleLogout} type="primary" danger>
-        Logout
-      </Button>
-    </div>
-  );
+
      const onFinish = (values) => {
     console.log('Success:', values);
   };
@@ -85,30 +63,20 @@ function onChangeNum(value) {
       
        <>
        
-     <nav>
-        <div className="container">
-          <div className="logoDiv">
-            <Image className="logo" src={logo} width="40px" height="40px" />
-            <h1>reservtable</h1>
-          </div>
-          { !token? (<Link href="/login"><a className="btn"  >login</a></Link>) :
-          (<Popover trigger="click" placement="bottom" content={content}>
-           <Avatar style={{ cursor: "pointer" }} size="large" icon={<UserOutlined />} />
-          </Popover>)}
-        </div>
-      </nav>
+    <Navbar/>
         <div className="singleRestaurant">
           <div className="left"  >
-   
-              <svg version="1.1" baseProfile="full"  width="500" height="500" >
-                {/* {restaurant?.map((rest) => {
-             <image key={rest.id} href={rest.mapUrl}   x="0" y="0" height="400px" width="400px"/>
-
-                })} */}
           {!! tables? (
-                // <circle key={tables.id} cx={tables.x} cy={tables.y} r="10" fill="green"></circle>
-        <p>{tables.x}</p>
+          <p>{tables.x}</p>
           ) :null}
+              <svg version="1.1" baseProfile="full"  width="500" height="500" >
+          
+             <image  href={mapUrl}   x="0" y="0" height="400px" width="400px"/>
+
+             
+      
+                 <circle className="circle" cx={x} cy={y} r="10" fill="green"></circle>
+      
 </svg>
              {/* <svg version="1.1" baseProfile="full"  width="500" height="500" >
              <image href="https://i.ibb.co/7kg8Yxw/1.png"   x="0" y="0" height="400px" width="400px"/>
@@ -196,7 +164,7 @@ function onChangeNum(value) {
       </Form.Item>
       <Form.Item name="numOfPeoplr"
      rules={[{required: true,message: 'Please select a number',},]}>
-    <InputNumber className="picker-num" min={1} max={100} defaultValue={2} onChange={onChangeNum} />
+    <InputNumber className="picker-num" min={1} max={100}  onChange={onChangeNum} />
      </Form.Item>
      <Form.Item >
     <Button type="primary" htmlType="submit">Book now</Button>
@@ -204,6 +172,7 @@ function onChangeNum(value) {
     </Form>
     </div>
     </div>
+    <Footer/>
     </>
     )
 }
