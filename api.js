@@ -48,7 +48,7 @@ export const ApiRegister = (info, callback) => {
   export const ApiRestaurant = async (callback) => {
     const token = await Cookies.get("user");
     var myHeaders = new Headers();
-    myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjMwNjIxNjMyfQ.GdBjxrJ5mFsCIHNJudoIhSRlgZXn9GhW9Iboz99WgXo");
+    myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjMwNzA0NjU4fQ.yfRmxPDxAXvdl5Xzms6Y6nK0FJfgDYmQNgXbZu1Qkr0");
     myHeaders.append("Content-Type", "application/json");
       var requestOptions = {
         method: "GET",
@@ -67,4 +67,26 @@ export const ApiRegister = (info, callback) => {
         .catch((error) => console.log("error", error));
 
   };
-
+  export const ApiReservation = (info, callback) => {
+    var myHeaders = new Headers();
+    myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjMwNzA0NjU4fQ.yfRmxPDxAXvdl5Xzms6Y6nK0FJfgDYmQNgXbZu1Qkr0");
+    myHeaders.append("Content-Type", "application/json");
+  
+    var raw = JSON.stringify(info);
+  
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+  
+    fetch(`${URL}/reservations`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.status) return callback(result, null);
+        callback(null, result.errMsg);
+      })
+      .catch((error) => console.log("error", error));
+  };
+  

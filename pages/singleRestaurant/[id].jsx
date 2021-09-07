@@ -1,12 +1,10 @@
-import { DatePicker, Empty,Form, Button,InputNumber,Spin} from 'antd';
+import Head from 'next/head';
+import { DatePicker, Empty,Form, Button,InputNumber,Spin,Popover,Card, message } from 'antd';
 const { RangePicker } = DatePicker;
-import Image from 'next/image'
-import {ArrowRightOutlined,UserOutlined} from '@ant-design/icons';
 import Cookies from "js-cookie";
 import { useState,useEffect } from "react";
 import { useRouter } from "next/router";
-import { URL } from "../../api";
-import {ApiRestaurant} from '../../api'
+import { URL ,ApiReservation } from "../../api";
 import Navbar from '../../components/navbar';
 import Footer from '../../components/footer';
 const singleRestaurant=()=>{
@@ -14,89 +12,137 @@ const singleRestaurant=()=>{
   const Router = useRouter();
   const [token, setToken] = useState();
   const [restaurant, setRestaurant] = useState();
+  const [book, setBook] = useState(false);
   const { id } = Router.query;
-  useEffect(() => {
+  const [tableId, setTableId] = useState()
+  const [resurantId, setResurantId] = useState()
+  const [startTime, setStartTime] = useState(0)
+  const [endTime, setEndTime] = useState(0)
+  const [numOfPeople, setNumOfPeople] = useState(0)
+
+
+  const getSingleResturant = async () => {
+    var myHeaders = new Headers();
+    myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjMwNzA0NjU4fQ.yfRmxPDxAXvdl5Xzms6Y6nK0FJfgDYmQNgXbZu1Qkr0");
+    myHeaders.append("Content-Type", "application/json");
+      var requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+      fetch(`${URL}/restaurant/${id}`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {setRestaurant(result.data); console.log(restaurant)  ; })
+        .catch((error) => console.log("error", error));
+  }
+  const getTables = () => {
     const user = Cookies.get("user");
     user ? setToken(user) :Router.push("/login")
     var myHeaders = new Headers();
-    myHeaders.append("token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjMwNjIxNjMyfQ.GdBjxrJ5mFsCIHNJudoIhSRlgZXn9GhW9Iboz99WgXo" );
+    myHeaders.append("token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjMwNzA0NjU4fQ.yfRmxPDxAXvdl5Xzms6Y6nK0FJfgDYmQNgXbZu1Qkr0");
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
-    fetch(`https://restaurant-reservation-systme.herokuapp.com/v1/tables/restaurant/${id}`, requestOptions)
+    fetch(`${URL}/tables/restaurant/${id}`, requestOptions)
       .then((response) => response.json())
       .then((result) =>  setTables(result.data))
       .catch((error) => console.log("error", error));
       console.log(tables);
+  }
+  useEffect(() => {
+    getSingleResturant();
+    getTables();
   }, [Router]);
 
-  const handleRect =  () => {
-    console.log("hello")
+  const handleRect =  (id) => {
+    const tableId=id
+    setTableId(tableId);
+    console.log(tableId);
   };
-
-     const onFinish = (values) => {
-    console.log('Success:', values);
-  };
-  
-function onChange( dateString) {
- 
-  console.log('Formatted Selected Time: ', dateString);
+function onChangeStart( value ,dateString) {
+  const startTime=dateString;
+  setStartTime(startTime)
+  console.log(startTime);
+}
+function onChangeEnd( value ,dateString) {
+  const endTime=dateString;
+  setEndTime(endTime)
+  console.log(endTime);
 }
 function onChangeNum(value) {
-  console.log('changed', value);
+  const numOfPeople=value
+  setNumOfPeople(numOfPeople)
+  console.log(numOfPeople);
 }
-
+const onFinish = () => {
+  
+  const packet= {
+    discription:"ok",
+    reservationsDate:startTime,
+    reservationsExpires:endTime,
+    noumberOfPeople:numOfPeople,
+    restaurantId:parseInt(id),
+    tableId:tableId,
+  }
+  ApiReservation(packet, (data, error) => {
+    console.log(data)
+    if (error) return message.error(error);
+    message.success("Successfully booked")
+  });
+};
     return(
-       <>    
+       <>  
+        <Head>
+        <title>{!!restaurant ? restaurant.name : null }</title>  
+      </Head>  
     <Navbar/>
+    {!!restaurant ? 
+    <img src={restaurant.imgUrl }  width="100%" height="600px"/> :null}
         <div className="singleRestaurant">
           <div className="left"  >
-              <svg  className="css-outline" version="1.1" baseProfile="full"  width="500" height="400" >
-              {!!tables ? (
-              !tables?.length > 0 ? (
-                <Empty />
-              ) : (
-                tables.map((table) => (              
-                  <circle className="circle" key={table.id} cx={table.x} cy={table.y} r="10" fill={!table.isAvailable ? "green" : "red"}></circle>
-
+              <svg  version="1.1" baseProfile="full"  width="500" height="400" >
+              {!!restaurant ? (       
+             <image className="imgMap" href={restaurant.mapUrl}   x="0" y="0" height="400px" width="400px"/>
+            ):null}
+              {!!tables ? (!tables?.length > 0 ? (<Empty />) : 
+              ( tables.map((table) => (              
+                  <Popover content={"this table has " +table.number + " seats"} title={"table number " + table.number }>
+                 <circle stroke="orange" onClick={()=>handleRect(table.id)} strokeWidth={book?20:0} className="circle" 
+                 key={table.id} cx={table.x} cy={table.y} r="10" fill={!table.isAvailable ? "green" : "red"}></circle>
+                 </Popover>
+                )
+                )
                 ))
-              )
-            ) : (
-              <Spin className="spin" size="large" />
-             
-            )}
-          
-            
-       
-             
-        
-      
-</svg>
-        
+                 : (<Spin className="spin" size="large" />  )}     
+               </svg>  
               </div> 
          <div className="right">
-           <Form className="form" initialValues={{remember: true,}} 
+         <div className="site-card-border-less-wrapper">
+    <Card className="card-res" title="Make Reseravation" bordered={true}  style={{ width: 500 }}>
+    <Form className="form" initialValues={{remember: true,}} 
            onFinish={onFinish} >
-          <Form.Item name="reservationStart"
+          <Form.Item name="reservationsDate"
         rules={[{required: true, message: 'Please select a start reservation time',},]}>
        <DatePicker showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm"
-      onChange={onChange}  className="picker"/>
+      onChange={onChangeStart}  className="picker" placeholder="pleace choice  date of reservation"/>
       </Form.Item>
-      <Form.Item name="reservationExp"
+      <Form.Item name="reservationsExpires"
         rules={[{required: true, message: 'Please select a end reservation time',},]}>
        <DatePicker showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm"
-      onChange={onChange}  className="picker"/>
+      onChange={onChangeEnd}  className="picker" placeholder="pleace enter expier  date of reservation"/>
       </Form.Item>
-      <Form.Item name="numOfPeoplr"
-     rules={[{required: true,message: 'Please select a number',},]}>
-    <InputNumber  placeholder="no of people"  className="picker-num" min={1} max={100}  onChange={onChangeNum} />
+      <Form.Item name="noumberOfPeople"
+     rules={[{required: true,message: 'Please select a number',}]}>
+    <InputNumber  placeholder="pleace enter no of people"  className="picker-num" min={1} max={100}  onChange={onChangeNum} />
      </Form.Item>
      <Form.Item >
     <Button type="primary" htmlType="submit">Book now</Button>
     </Form.Item>
     </Form>
+    </Card>
+  </div>,
     </div>
     </div>
     <Footer/>

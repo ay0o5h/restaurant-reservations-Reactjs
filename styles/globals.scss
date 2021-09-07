@@ -284,8 +284,6 @@ nav {
 .singleRestaurant {
   @extend .container;
   height: 100vh;
- 
-  margin-top: 10%;
   .left {
     flex: 50%;
     circle{
@@ -311,16 +309,19 @@ nav {
   .right {
     flex: 50%;
     padding: 3%;
+    .card-res {
+      box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+    }
     .form {
      
       .picker {
         padding: 10px;
         border-radius:15px;
-        width: 83%;
+        width: 100%;
       }
       .picker-num {
         padding: 5px ;
-        width: 83%;
+        width: 100%;
         border-radius:15px;
       }
     }
@@ -331,7 +332,7 @@ nav {
       outline: 0;
       text-transform: capitalize;
       padding: 10px ;
-      width: 83%;
+      width: 100%;
       border-radius: 15px;
       cursor: pointer;
       &:hover {
@@ -358,7 +359,9 @@ nav {
       }
     }
     .left {
-      margin: auto;
+      .imgMap {
+        padding-left:100px
+      }
     }
   }
 }

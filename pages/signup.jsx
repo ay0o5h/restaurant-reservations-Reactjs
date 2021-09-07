@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 const Signup =() => {
   const Router = useRouter();
-
     const onFinish = (info) => {
       ApiRegister(info, (data, error) => {
         if (error) return message.error(error);
@@ -18,7 +17,6 @@ const Signup =() => {
         Router.push("/");
       });
    };
-   
     return (
       <>
         <Head>
