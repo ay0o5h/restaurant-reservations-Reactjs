@@ -19,12 +19,12 @@ import { URL, ApiReservation } from "../../api";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
 import moment from "moment";
+// import Cookies from "universal-cookie";
 const singleRestaurant = () => {
   const [tables, setTables] = useState([]);
   const Router = useRouter();
   const [token, setToken] = useState();
   const [restaurant, setRestaurant] = useState();
-  const [book, setBook] = useState(false);
   const { id } = Router.query;
   const [tableId, setTableId] = useState();
   const [bookTime, setBookTime] = useState();
@@ -36,10 +36,7 @@ const singleRestaurant = () => {
 
   const getSingleResturant = async () => {
     var myHeaders = new Headers();
-    myHeaders.append(
-      "token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjMwNzA0NjU4fQ.yfRmxPDxAXvdl5Xzms6Y6nK0FJfgDYmQNgXbZu1Qkr0"
-    );
+    myHeaders.append("token", token);
     myHeaders.append("Content-Type", "application/json");
     var requestOptions = {
       method: "GET",
@@ -54,13 +51,10 @@ const singleRestaurant = () => {
       .catch((error) => console.log("error", error));
   };
   const getTables = () => {
-    const user = Cookies.get("user");
-    user ? setToken(user) : Router.push("/login");
+    const token = Cookies.get("token");
+    token ? setToken(token) : Router.push("/login");
     var myHeaders = new Headers();
-    myHeaders.append(
-      "token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjMwNzA0NjU4fQ.yfRmxPDxAXvdl5Xzms6Y6nK0FJfgDYmQNgXbZu1Qkr0"
-    );
+    myHeaders.append("token", token);
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
@@ -76,26 +70,23 @@ const singleRestaurant = () => {
     console.log(tables);
   };
   useEffect(() => {
+    const token = Cookies.get("token");
+    setToken(token);
+    console.log(token);
     getSingleResturant();
     getTables();
   }, [Router]);
-
   const handleRect = (id) => {
     const tableId = id;
     setTableId(tableId);
     console.log(tableId);
     var myHeaders = new Headers();
-    myHeaders.append(
-      "token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjMwNzA0NjU4fQ.yfRmxPDxAXvdl5Xzms6Y6nK0FJfgDYmQNgXbZu1Qkr0"
-    );
-
+    myHeaders.append("token", token);
     var requestOptions = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",
     };
-
     fetch(`${URL}/tables/${tableId}/reservations`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
@@ -103,20 +94,7 @@ const singleRestaurant = () => {
         setBookTime(bookTime);
       })
       .catch((error) => console.log("error", error));
-
     setShow(true);
-    // Modal.info({
-    //   title: 'This is a notification message',
-    //   content: (
-    //     <div>
-    //     {!!bookTime ? (!bookTime?.length > 0 ? (<Empty />) :
-    //      ( bookTime.map((b) =>(
-
-    //         <p key={b.id}>{b.reservationsDate}</p>
-    //       )))):(<Spin className="spin" size="large" /> )}
-    //      </div>),
-    //   onOk() {},
-    // })
   };
   const refreshPage = () => {
     window.location.reload();
@@ -200,7 +178,6 @@ const singleRestaurant = () => {
                 width="500px"
               />
             ) : null}
-
             {!!tables ? (
               !tables?.length > 0 ? (
                 <Empty />
@@ -211,9 +188,7 @@ const singleRestaurant = () => {
                     title={"table number " + table.number}
                   >
                     <circle
-                      stroke="orange"
                       onClick={() => handleRect(table.id)}
-                      strokeWidth={book ? 20 : 0}
                       className="circle"
                       key={table.id}
                       cx={table.x}
@@ -233,7 +208,6 @@ const singleRestaurant = () => {
                           : "#882121"
                       }
                     ></circle>
-                    {/* fill={tableId===table.id ? "red":"#882121"  } */}
                   </Popover>
                 ))
               )

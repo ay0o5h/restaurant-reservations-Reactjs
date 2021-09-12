@@ -11,8 +11,8 @@ import Footer from "../components/footer";
 export default function Home() {
   const [token, setToken] = useState();
   useEffect(() => {
-    const user = Cookies.get("user");
-    if (user) setToken(JSON.parse(user));
+    const token = Cookies.get("token");
+    if (token) setToken(token);
   }, []);
   return (
     <>

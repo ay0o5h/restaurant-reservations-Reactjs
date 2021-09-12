@@ -10,8 +10,8 @@ const Navbar = () => {
   const [token, setToken] = useState();
   const Router = useRouter();
   useEffect(() => {
-    const user = Cookies.get("user");
-    if (user) setToken(JSON.parse(user));
+    const token = Cookies.get("token");
+    if (token) setToken(token);
   }, []);
   const handleLogout = async () => {
     await Cookies.remove("token");
