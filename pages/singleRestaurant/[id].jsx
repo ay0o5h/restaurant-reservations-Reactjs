@@ -19,7 +19,6 @@ import { URL, ApiReservation } from "../../api";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
 import moment from "moment";
-// import Cookies from "universal-cookie";
 const singleRestaurant = () => {
   const [tables, setTables] = useState([]);
   const Router = useRouter();
@@ -33,7 +32,7 @@ const singleRestaurant = () => {
   const [numOfPeople, setNumOfPeople] = useState(0);
   const [show, setShow] = useState(false);
   const [userTables, setUserTables] = useState();
-
+  const [reservationsExpire, setReservationsExpires] = useState();
   const getSingleResturant = async () => {
     var myHeaders = new Headers();
     myHeaders.append("token", token);
@@ -145,6 +144,12 @@ const singleRestaurant = () => {
               ) : (
                 bookTime?.map((b) => (
                   <p key={b.id}>
+                    {
+                      (setReservationsExpires(
+                        moment(b.reservationsDate).utc().format(" HH:mm ")
+                      ),
+                      console.log(reservationsExpire))
+                    }
                     {moment(b.reservationsDate).utc().format(" HH:mm ")} -{" "}
                     {moment(b.reservationsExpires).utc().format("HH:mm")}
                   </p>
@@ -203,7 +208,17 @@ const singleRestaurant = () => {
                           userTables[2] === table.id) ||
                         (userTables !== undefined &&
                           userTables[3] === table.id) ||
-                        (userTables !== undefined && userTables[4] === table.id)
+                        (userTables !== undefined &&
+                          userTables[4] === table.id) ||
+                        (userTables !== undefined &&
+                          userTables[5] === table.id) ||
+                        (userTables !== undefined &&
+                          userTables[6] === table.id) ||
+                        (userTables !== undefined &&
+                          userTables[7] === table.id) ||
+                        (userTables !== undefined &&
+                          userTables[8] === table.id) ||
+                        (userTables !== undefined && userTables[9] === table.id)
                           ? "red"
                           : "#882121"
                       }
