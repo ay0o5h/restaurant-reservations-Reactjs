@@ -128,13 +128,14 @@ function disabledDate(current) {
 useEffect(() => {
   show?
     Modal.info({
-      title: 'This is a notification message',
+      title: 'Time of Reservations',
       content: (
         <div>
-        {
+        { 
+        bookTime.length === 0 ? <p>there is no reservation on this table now</p>:
           bookTime?.map((b) =>(
            
-            <p key={b.id}>{b.reservationsDate}</p>
+            <p key={b.id}>{moment(b.reservationsDate).utc().format(' HH:mm ')} - { moment(b.reservationsExpires).utc().format('HH:mm')}</p>
           ))}
          </div>),
       onOk() {},
