@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { DatePicker, Empty,Form, Button,InputNumber,Spin,Popover,Card, message } from 'antd';
+import {Modal, DatePicker, Empty,Form, Button,InputNumber,Spin,Popover,Card, message } from 'antd';
 const { RangePicker } = DatePicker;
 import Cookies from "js-cookie";
 import { useState,useEffect } from "react";
@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { URL ,ApiReservation } from "../../api";
 import Navbar from '../../components/navbar';
 import Footer from '../../components/footer';
+import moment from 'moment';
 const singleRestaurant=()=>{
   const [tables, setTables] = useState([]);
   const Router = useRouter();
@@ -15,12 +16,11 @@ const singleRestaurant=()=>{
   const [book, setBook] = useState(false);
   const { id } = Router.query;
   const [tableId, setTableId] = useState()
-  const [resurantId, setResurantId] = useState()
+  const [bookTime, setBookTime] = useState()
   const [startTime, setStartTime] = useState(0)
   const [endTime, setEndTime] = useState(0)
   const [numOfPeople, setNumOfPeople] = useState(0)
-
-
+  const [show , setShow]= useState(false)
   const getSingleResturant = async () => {
     var myHeaders = new Headers();
     myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjMwNzA0NjU4fQ.yfRmxPDxAXvdl5Xzms6Y6nK0FJfgDYmQNgXbZu1Qkr0");
@@ -60,6 +60,34 @@ const singleRestaurant=()=>{
     const tableId=id
     setTableId(tableId);
     console.log(tableId);
+    var myHeaders = new Headers();
+myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjMwNzA0NjU4fQ.yfRmxPDxAXvdl5Xzms6Y6nK0FJfgDYmQNgXbZu1Qkr0");
+
+var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+
+fetch(`${URL}/tables/${tableId}/reservations`, requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    const bookTime=result.data;
+    setBookTime(bookTime);})
+  .catch(error => console.log('error', error));
+ 
+  Modal.info({
+    title: 'This is a notification message',
+    content: (
+      <div>
+      {!!bookTime ? (!bookTime?.length > 0 ? (<Empty />) : 
+       ( bookTime.map((b) =>(
+         
+          <p key={b.id}>{b.reservationsDate}</p>
+        )))):(<Spin className="spin" size="large" /> )}
+       </div>),
+    onOk() {},
+  })
   };
 function onChangeStart( value ,dateString) {
   const startTime=dateString;
@@ -77,21 +105,24 @@ function onChangeNum(value) {
   console.log(numOfPeople);
 }
 const onFinish = () => {
-  
   const packet= {
     discription:"ok",
     reservationsDate:startTime,
     reservationsExpires:endTime,
     noumberOfPeople:numOfPeople,
     restaurantId:parseInt(id),
-    tableId:tableId,
+    tableId
   }
+  console.log(packet)
   ApiReservation(packet, (data, error) => {
     console.log(data)
     if (error) return message.error(error);
     message.success("Successfully booked")
   });
 };
+function disabledDate(current) {
+  return current && current < moment().startOf('day');
+}
     return(
        <>  
         <Head>
@@ -102,20 +133,18 @@ const onFinish = () => {
     <img src={restaurant.imgUrl }  width="100%" height="600px"/> :null}
         <div className="singleRestaurant">
           <div className="left"  >
-              <svg  version="1.1" baseProfile="full"  width="500" height="400" >
+              <svg  version="1.1" baseProfile="full"  width="500" height="500" >
               {!!restaurant ? (       
-             <image className="imgMap" href={restaurant.mapUrl}   x="0" y="0" height="400px" width="400px"/>
+             <image className="imgMap" href={restaurant.mapUrl}   x="0" y="0" height="500px" width="500px"/>
             ):null}
+             
               {!!tables ? (!tables?.length > 0 ? (<Empty />) : 
               ( tables.map((table) => (              
-                  <Popover content={"this table has " +table.number + " seats"} title={"table number " + table.number }>
+                  <Popover content={"this table has " +table.chairs + " seats"} title={"table number " + table.number }>
                  <circle stroke="orange" onClick={()=>handleRect(table.id)} strokeWidth={book?20:0} className="circle" 
-                 key={table.id} cx={table.x} cy={table.y} r="10" fill={!table.isAvailable ? "green" : "red"}></circle>
+                 key={table.id} cx={table.x} cy={table.y} r="15" fill={tableId===table.id ? "red":"#882121"  }></circle>
                  </Popover>
-                )
-                )
-                ))
-                 : (<Spin className="spin" size="large" />  )}     
+                )))) : (<Spin className="spin" size="large" />  )}     
                </svg>  
               </div> 
          <div className="right">
@@ -125,16 +154,15 @@ const onFinish = () => {
            onFinish={onFinish} >
           <Form.Item name="reservationsDate"
         rules={[{required: true, message: 'Please select a start reservation time',},]}>
-       <DatePicker showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm"
+       <DatePicker disabledDate={disabledDate}   disabledHours={() => [0, 2, 4, 6, 8, 10, 13, 15, 17, 19, 21, 23]} showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm"
       onChange={onChangeStart}  className="picker" placeholder="pleace choice  date of reservation"/>
       </Form.Item>
       <Form.Item name="reservationsExpires"
         rules={[{required: true, message: 'Please select a end reservation time',},]}>
-       <DatePicker showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm"
+       <DatePicker disabledDate={disabledDate} showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm"
       onChange={onChangeEnd}  className="picker" placeholder="pleace enter expier  date of reservation"/>
       </Form.Item>
-      <Form.Item name="noumberOfPeople"
-     rules={[{required: true,message: 'Please select a number',}]}>
+      <Form.Item name="noumberOfPeople">
     <InputNumber  placeholder="pleace enter no of people"  className="picker-num" min={1} max={100}  onChange={onChangeNum} />
      </Form.Item>
      <Form.Item >
@@ -144,6 +172,16 @@ const onFinish = () => {
     </Card>
   </div>,
     </div>
+    <div>
+      {!!bookTime ? (!bookTime?.length > 0 ? (<Empty />) : 
+       ( bookTime.map((b) =>(
+         <>
+          <p key={b.id}>{ moment(b.reservationsDate).utc().format('YYYY-MM-DD HH:mm ')}</p>
+          <p key={b.id}>{ moment(b.reservationsExpires).utc().format('YYYY-MM-DD HH:mm')}</p>
+          <p>{moment().utc(30).format('YYYY-MM-DD HH:mm ')}</p>
+          </>
+        )))):(<Spin className="spin" size="large" /> )}
+        </div>
     </div>
     <Footer/>
     </>
