@@ -21,6 +21,8 @@ const singleRestaurant=()=>{
   const [endTime, setEndTime] = useState(0)
   const [numOfPeople, setNumOfPeople] = useState(0)
   const [show , setShow]= useState(false)
+  const [userTables , setUserTables]= useState()
+
   const getSingleResturant = async () => {
     var myHeaders = new Headers();
     myHeaders.append("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjMwNzA0NjU4fQ.yfRmxPDxAXvdl5Xzms6Y6nK0FJfgDYmQNgXbZu1Qkr0");
@@ -32,7 +34,7 @@ const singleRestaurant=()=>{
       };
       fetch(`${URL}/restaurant/${id}`, requestOptions)
         .then((response) => response.json())
-        .then((result) => {setRestaurant(result.data); console.log(restaurant)  ; })
+        .then((result) => {setRestaurant(result.data);  })
         .catch((error) => console.log("error", error));
   }
   const getTables = () => {
@@ -47,9 +49,10 @@ const singleRestaurant=()=>{
     };
     fetch(`${URL}/tables/restaurant/${id}`, requestOptions)
       .then((response) => response.json())
-      .then((result) =>  setTables(result.data))
+      .then((result) =>  {setTables(result.data) ; setUserTables(result.userReserved)})
       .catch((error) => console.log("error", error));
       console.log(tables);
+    
   }
   useEffect(() => {
     getSingleResturant();
@@ -90,7 +93,8 @@ fetch(`${URL}/tables/${tableId}/reservations`, requestOptions)
   //   onOk() {},
   // })
   };
-
+  const refreshPage = ()=>{
+    window.location.reload();  }
 function onChangeStart( value ,dateString) {
   const startTime=dateString;
   setStartTime(startTime)
@@ -120,6 +124,7 @@ const onFinish = () => {
     console.log(data)
     if (error) return message.error(error);
     message.success("Successfully booked")
+    refreshPage()
   });
 };
 function disabledDate(current) {
@@ -158,10 +163,17 @@ useEffect(() => {
             ):null}
              
               {!!tables ? (!tables?.length > 0 ? (<Empty />) : 
-              ( tables.map((table) => (              
+              ( tables.map((table) => (            
+             
                   <Popover content={"this table has " +table.chairs + " seats"} title={"table number " + table.number }>
                  <circle stroke="orange" onClick={()=>handleRect(table.id)} strokeWidth={book?20:0} className="circle" 
-                 key={table.id} cx={table.x} cy={table.y} r="15" fill={tableId===table.id ? "red":"#882121"  }></circle>
+                 key={table.id} cx={table.x} cy={table.y} r="15" fill={
+                   userTables !== undefined &&userTables[0] === table.id ||
+                  userTables !== undefined && userTables[1] === table.id || 
+                  userTables !== undefined && userTables[2] === table.id||
+                  userTables !== undefined &&userTables[3] === table.id || 
+                  userTables !== undefined&&userTables[4] === table.id?"red": "#882121"}></circle>
+               {/* fill={tableId===table.id ? "red":"#882121"  } */}
                  </Popover>
                 )))) : (<Spin className="spin" size="large" />  )}     
                </svg>  
@@ -173,7 +185,7 @@ useEffect(() => {
            onFinish={onFinish} >
           <Form.Item name="reservationsDate"
         rules={[{required: true, message: 'Please select a start reservation time',},]}>
-       <DatePicker disabledDate={disabledDate}   disabledHours={() => [0, 2, 4, 6, 8, 10, 13, 15, 17, 19, 21, 23]} showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm"
+       <DatePicker disabledDate={disabledDate}   showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm"
       onChange={onChangeStart}  className="picker" placeholder="pleace choice  date of reservation"/>
       </Form.Item>
       <Form.Item name="reservationsExpires"
@@ -191,17 +203,6 @@ useEffect(() => {
     </Card>
   </div>,
     </div>
-    {/* <div>
-      {!!bookTime ? (!bookTime?.length > 0 ? (<Empty />) : 
-       ( bookTime.map((b) =>(
-         <div className="pop-test">
-          <p key={b.id}>{ moment(b.reservationsDate).utc().format('YYYY-MM-DD HH:mm ')}</p>
-          <p key={b.id}>{ moment(b.reservationsExpires).utc().format('YYYY-MM-DD HH:mm')}</p>
-          <p>{moment().utc(30).format('YYYY-MM-DD HH:mm ')}</p>
-          </div>
-        )))):(<p>  </p>)}
-        </div>
-    </div> */}
     </div>
     <Footer/>
     </>
