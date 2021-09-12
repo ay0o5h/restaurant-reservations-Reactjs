@@ -75,20 +75,22 @@ fetch(`${URL}/tables/${tableId}/reservations`, requestOptions)
     const bookTime=result.data;
     setBookTime(bookTime);})
   .catch(error => console.log('error', error));
- 
-  Modal.info({
-    title: 'This is a notification message',
-    content: (
-      <div>
-      {!!bookTime ? (!bookTime?.length > 0 ? (<Empty />) : 
-       ( bookTime.map((b) =>(
+
+  setShow(true)
+  // Modal.info({
+  //   title: 'This is a notification message',
+  //   content: (
+  //     <div>
+  //     {!!bookTime ? (!bookTime?.length > 0 ? (<Empty />) : 
+  //      ( bookTime.map((b) =>(
          
-          <p key={b.id}>{b.reservationsDate}</p>
-        )))):(<Spin className="spin" size="large" /> )}
-       </div>),
-    onOk() {},
-  })
+  //         <p key={b.id}>{b.reservationsDate}</p>
+  //       )))):(<Spin className="spin" size="large" /> )}
+  //      </div>),
+  //   onOk() {},
+  // })
   };
+
 function onChangeStart( value ,dateString) {
   const startTime=dateString;
   setStartTime(startTime)
@@ -123,6 +125,22 @@ const onFinish = () => {
 function disabledDate(current) {
   return current && current < moment().startOf('day');
 }
+useEffect(() => {
+  show?
+    Modal.info({
+      title: 'This is a notification message',
+      content: (
+        <div>
+        {
+          bookTime?.map((b) =>(
+           
+            <p key={b.id}>{b.reservationsDate}</p>
+          ))}
+         </div>),
+      onOk() {},
+    }):null
+  
+},[bookTime])
     return(
        <>  
         <Head>
@@ -172,16 +190,17 @@ function disabledDate(current) {
     </Card>
   </div>,
     </div>
-    <div>
+    {/* <div>
       {!!bookTime ? (!bookTime?.length > 0 ? (<Empty />) : 
        ( bookTime.map((b) =>(
-         <>
+         <div className="pop-test">
           <p key={b.id}>{ moment(b.reservationsDate).utc().format('YYYY-MM-DD HH:mm ')}</p>
           <p key={b.id}>{ moment(b.reservationsExpires).utc().format('YYYY-MM-DD HH:mm')}</p>
           <p>{moment().utc(30).format('YYYY-MM-DD HH:mm ')}</p>
-          </>
-        )))):(<Spin className="spin" size="large" /> )}
+          </div>
+        )))):(<p>  </p>)}
         </div>
+    </div> */}
     </div>
     <Footer/>
     </>

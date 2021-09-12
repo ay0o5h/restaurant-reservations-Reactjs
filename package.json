@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.3",
+    "@badrap/bar-of-progress": "^0.1.2",
     "add": "^2.0.6",
     "antd": "^4.16.12",
     "js-cookie": "^3.0.0",
